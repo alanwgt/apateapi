@@ -20,3 +20,7 @@ apate-49951-firebase-adminsdk-ijp4t-97140ca736.json
 
 # We don't need the log files to be tracked
 *.log
+
+# Ignore any secret/public key file
+*.pem
+*.der
