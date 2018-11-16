@@ -4,4 +4,5 @@ package util
 type Configuration struct {
 	DB     DbConfig
 	Server ServerConfig
+	Crypto CryptoConfig
 }
