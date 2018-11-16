@@ -1,0 +1,12 @@
+syntax = "proto3";
+package protos;
+
+message ServerResponse {
+    enum Status {
+        Ok = 1;
+        ERROR = 2;
+    }
+    required Status status = 1;
+    required int32 statusCode = 2;
+    optional string message = 3;
+}

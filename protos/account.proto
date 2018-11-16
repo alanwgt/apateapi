@@ -1,0 +1,9 @@
+syntax = "proto3";
+package protos;
+
+message AccountSignUp {
+    string username = 1;
+    string pub_k = 2;
+    string fcm_token = 3;
+}
+
