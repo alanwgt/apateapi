@@ -1,13 +1,16 @@
 package main
 
 import (
+	"bytes"
 	"encoding/base64"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 
+	_ "github.com/alanwgt/apateapi/crypto"
 	_ "github.com/alanwgt/apateapi/database"
+	"github.com/alanwgt/apateapi/messages"
 	"github.com/alanwgt/apateapi/routes"
 	"github.com/alanwgt/apateapi/util"
 	"github.com/rs/cors"
@@ -51,7 +54,17 @@ func decodeBase64Requests(next http.Handler) http.Handler {
 		// every POST MUST be encoded in base64!
 		if r.Method == "POST" {
 			d := base64.NewDecoder(base64.StdEncoding, r.Body)
-			r.Body = ioutil.NopCloser(d)
+			// r.Body = ioutil.NopCloser(d)
+
+			decoded, err := ioutil.ReadAll(ioutil.NopCloser(d))
+
+			if err != nil {
+				log.Println(err)
+				messages.ErrorWithMessage(w, http.StatusBadRequest, "An error occurred while reading bytes from body.")
+				return
+			}
+
+			r.Body = ioutil.NopCloser(bytes.NewReader(decoded))
 		}
 		next.ServeHTTP(w, r)
 	})
