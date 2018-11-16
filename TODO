@@ -1,2 +1,4 @@
 ☐ test if the configuration loader is working
 ☐ handle CORS properly
+
+protoc --go_out=. ./protos/*.proto

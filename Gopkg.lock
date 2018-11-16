@@ -56,6 +56,29 @@
   revision = "4ded0e9383f75c197b3a2aaa6d590ac52df6fd79"
   version = "v1.0.0"
 
+[[projects]]
+  digest = "1:b0c25f00bad20d783d259af2af8666969e2fc343fa0dc9efe52936bbd67fb758"
+  name = "github.com/rs/cors"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "9a47f48565a795472d43519dd49aac781f3034fb"
+  version = "v1.6.0"
+
+[[projects]]
+  branch = "master"
+  digest = "1:57178fd65de60b4140785fb964300941c66c4ae7fcf110b4fcaca70ce9027976"
+  name = "golang.org/x/crypto"
+  packages = [
+    "curve25519",
+    "internal/subtle",
+    "nacl/box",
+    "nacl/secretbox",
+    "poly1305",
+    "salsa20/salsa",
+  ]
+  pruneopts = "UT"
+  revision = "3d3f9f413869b949e48070b5bc593aa22cc2b8f2"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
@@ -64,6 +87,8 @@
     "github.com/gorilla/mux",
     "github.com/jinzhu/gorm",
     "github.com/jinzhu/gorm/dialects/postgres",
+    "github.com/rs/cors",
+    "golang.org/x/crypto/nacl/box",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1
