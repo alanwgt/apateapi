@@ -3,10 +3,10 @@ package protos;
 
 message ServerResponse {
     enum Status {
-        Ok = 1;
-        ERROR = 2;
+        Ok = 0;
+        ERROR = 1;
     }
-    required Status status = 1;
-    required int32 statusCode = 2;
+    Status status = 1;
+    int32 statusCode = 2;
     string message = 3;
 }
