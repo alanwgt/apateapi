@@ -61,3 +61,8 @@ func Create(value interface{}) {
 	log.Println("Inserting:", value)
 	conn.Create(value)
 }
+
+// GetOpenConnection returns an instance of the current open connection
+func GetOpenConnection() *gorm.DB {
+	return conn
+}
