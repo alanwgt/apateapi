@@ -10,3 +10,16 @@ message ServerResponse {
     int32 statusCode = 2;
     string message = 3;
 }
+
+message DeviceRequest {
+    // the request type
+    enum Type {
+        Handshake = 0;
+    }
+    Type type = 1;
+    string username = 2;
+    // the payload will be always be an encrypted message encoded in base64
+    string paylod = 3;
+    // the nonce is also encoded in base64
+    string nonce = 4;
+}
