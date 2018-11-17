@@ -3,8 +3,13 @@ package crypto
 import (
 	"crypto/rand"
 	"encoding/base64"
+	"errors"
 	"log"
 	"os"
+
+	"github.com/alanwgt/apateapi/cache"
+
+	"github.com/alanwgt/apateapi/protos"
 
 	"golang.org/x/crypto/nacl/box"
 
@@ -37,9 +42,54 @@ func init() {
 	b64PubKey = base64.StdEncoding.EncodeToString(publicKey[:])
 }
 
-// GetB64PubK returns the public key encoded in base64
-func GetB64PubK() string {
+// GetServerB64PubK returns the public key encoded in base64
+func GetServerB64PubK() string {
 	return b64PubKey
+}
+
+// GetServerSecK returns a pointer to the raw secret key
+func GetServerSecK() *[32]byte {
+	return secretKey
+}
+
+// OpenUserBox opens a crypto box and returns the raw message
+func OpenUserBox(dr *protos.DeviceRequest) (string, error) {
+	// we need to decode all the base64 data first
+	bPayload, err := base64.StdEncoding.DecodeString(dr.Paylod)
+
+	if err != nil {
+		return "", errors.New("Payload couldn't be decoded")
+	}
+
+	bNonce, err := base64.StdEncoding.DecodeString(dr.Nonce)
+
+	if err != nil {
+		return "", errors.New("Nonce couldn't be decoded")
+	}
+
+	// u, err := ca.GetUser(dr.Username)
+	u, err := cache.GetUser(dr.Username)
+
+	if err != nil {
+		return "", err
+	}
+
+	var out []byte
+	var nonce [24]byte
+
+	copy(nonce[:], bNonce)
+
+	if _, ok := box.Open(
+		out,
+		bPayload,
+		&nonce,
+		u.PubK,
+		secretKey,
+	); !ok {
+		return "", errors.New("Couldn't open the box")
+	}
+
+	return string(out), nil
 }
 
 // Loads the .der secret key from a .der file
