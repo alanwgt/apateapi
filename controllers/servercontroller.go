@@ -7,7 +7,8 @@ import (
 	"github.com/alanwgt/apateapi/crypto"
 )
 
+// GetServerPubK sends the server's current public key encoded in base64
 func GetServerPubK(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprint(w, crypto.GetB64PubK())
+	fmt.Fprint(w, crypto.GetServerB64PubK())
 }
