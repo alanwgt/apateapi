@@ -6,6 +6,8 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/alanwgt/apateapi/crypto"
+
 	"github.com/golang/protobuf/proto"
 
 	db "github.com/alanwgt/apateapi/database"
@@ -17,13 +19,7 @@ import (
 // CreateAccount creates an user account if all the requirements are satisfied
 // The username MUST be unique and the fcm_id cannot be a duplicate
 func CreateAccount(w http.ResponseWriter, r *http.Request) {
-	decoded, err := ioutil.ReadAll(r.Body)
-
-	if err != nil {
-		log.Println(err)
-		messages.ErrorWithMessage(w, http.StatusBadRequest, "An error occurred while reading bytes from body.")
-		return
-	}
+	decoded, _ := ioutil.ReadAll(r.Body)
 
 	ar := &protos.AccountSignUp{}
 	if err := proto.Unmarshal(decoded, ar); err != nil {
@@ -61,4 +57,28 @@ func CreateAccount(w http.ResponseWriter, r *http.Request) {
 	db.Create(&u)
 	log.Printf("User '%s' created!\n", u.Username)
 	messages.RequestOK(w, "Created!")
+}
+
+// Handshake exchanges an encrypted message to ensure that the user is authenticated
+func Handshake(w http.ResponseWriter, r *http.Request) {
+	decoded, _ := ioutil.ReadAll(r.Body)
+	dr := &protos.DeviceRequest{}
+
+	if err := proto.Unmarshal(decoded, dr); err != nil {
+		// wrong proto! discard the request
+		log.Println(err)
+		messages.ErrorWithMessage(w, http.StatusBadRequest, "The wrong proto was used.")
+		return
+	}
+
+	_, err := crypto.OpenUserBox(dr)
+
+	if err != nil {
+		log.Println("Couldn't authenticate the user!")
+		log.Println(err)
+		messages.ErrorWithMessage(w, http.StatusForbidden, err.Error())
+		return
+	}
+
+	messages.RequestOK(w, "handshake:"+dr.Username)
 }

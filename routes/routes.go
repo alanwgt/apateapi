@@ -45,4 +45,16 @@ var routes = Routes{
 		"/user",
 		controllers.CreateAccount,
 	},
+	Route{
+		"UserHandshake",
+		"POST",
+		"/user/handshake",
+		controllers.Handshake,
+	},
+	Route{
+		"ServerPublickey",
+		"GET",
+		"/server/pubk",
+		controllers.GetServerPubK,
+	},
 }
