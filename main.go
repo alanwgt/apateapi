@@ -12,6 +12,7 @@ import (
 	_ "github.com/alanwgt/apateapi/database"
 	"github.com/alanwgt/apateapi/messages"
 	"github.com/alanwgt/apateapi/routes"
+	_ "github.com/alanwgt/apateapi/services"
 	"github.com/alanwgt/apateapi/util"
 	"github.com/rs/cors"
 )
@@ -79,6 +80,7 @@ func genDefaultCorsOpts() *cors.Cors {
 			http.MethodOptions,
 			http.MethodPost,
 			http.MethodHead,
+			http.MethodDelete,
 		},
 		AllowedHeaders: []string{"*"},
 	})

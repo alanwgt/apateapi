@@ -57,4 +57,16 @@ var routes = Routes{
 		"/server/pubk",
 		controllers.GetServerPubK,
 	},
+	Route{
+		"QueryUser",
+		"GET",
+		"/user/q/{username}",
+		controllers.QueryUsers,
+	},
+	Route{
+		"DeleteAccount",
+		"DELETE",
+		"/user",
+		controllers.DeleteAccount,
+	},
 }

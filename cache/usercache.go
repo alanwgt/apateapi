@@ -57,3 +57,8 @@ func SetUser(u *models.User) (uc *UserCache) {
 	c.Set(u.Username, uc, cache.DefaultExpiration)
 	return
 }
+
+// RemoveUser deletes an user entry from cache
+func RemoveUser(u *models.User) {
+	c.Delete(u.Username)
+}
