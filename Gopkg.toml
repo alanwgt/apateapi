@@ -44,3 +44,7 @@
 [[constraint]]
   branch = "master"
   name = "golang.org/x/crypto"
+
+[[constraint]]
+  name = "firebase.google.com/go"
+  version = "3.4.0"
