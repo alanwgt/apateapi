@@ -24,3 +24,7 @@ apate-49951-firebase-adminsdk-ijp4t-97140ca736.json
 # Ignore any secret/public key file
 *.pem
 *.der
+
+# Ignore vendor folder
+
+/vendor
