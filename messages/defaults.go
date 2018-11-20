@@ -2,6 +2,7 @@ package messages
 
 import (
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -34,6 +35,19 @@ func RequestOK(w http.ResponseWriter, m string) {
 		http.StatusOK,
 		protos.ServerResponse_Ok,
 	))
+}
+
+// RawJSON sends a JSON to the request
+func RawJSON(w http.ResponseWriter, m interface{}) {
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	d, err := json.Marshal(m)
+
+	if err != nil {
+		log.Panic(err)
+	}
+
+	w.Write(d)
 }
 
 // returns a b64 server response proto message safe to transport via HTTP
