@@ -7,3 +7,27 @@ message AccountSignUp {
     string fcm_token = 3;
 }
 
+message UserModel {
+    string username = 1;
+    string pub_k = 2;
+}
+
+message FriendRequest {
+    string username = 1;
+    int64 timestamp = 2;
+}
+
+message Message {
+    int64 message_id = 1;
+    string from = 2;
+    string to = 3;
+    int64 timestamp = 4;
+    bool deletable = 5;
+}
+
+message AccountHandshake {
+    repeated UserModel contacts = 1;
+    repeated FriendRequest friend_requests = 2;
+    repeated Message sent_messages = 3;
+    repeated Message unopened_messaged = 4;
+}

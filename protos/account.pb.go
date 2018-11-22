@@ -75,20 +75,267 @@ func (m *AccountSignUp) GetFcmToken() string {
 	return ""
 }
 
+type UserModel struct {
+	Username             string   `protobuf:"bytes,1,opt,name=username,proto3" json:"username,omitempty"`
+	PubK                 string   `protobuf:"bytes,2,opt,name=pub_k,json=pubK,proto3" json:"pub_k,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *UserModel) Reset()         { *m = UserModel{} }
+func (m *UserModel) String() string { return proto.CompactTextString(m) }
+func (*UserModel) ProtoMessage()    {}
+func (*UserModel) Descriptor() ([]byte, []int) {
+	return fileDescriptor_82b24b10312e6348, []int{1}
+}
+
+func (m *UserModel) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_UserModel.Unmarshal(m, b)
+}
+func (m *UserModel) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_UserModel.Marshal(b, m, deterministic)
+}
+func (m *UserModel) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_UserModel.Merge(m, src)
+}
+func (m *UserModel) XXX_Size() int {
+	return xxx_messageInfo_UserModel.Size(m)
+}
+func (m *UserModel) XXX_DiscardUnknown() {
+	xxx_messageInfo_UserModel.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_UserModel proto.InternalMessageInfo
+
+func (m *UserModel) GetUsername() string {
+	if m != nil {
+		return m.Username
+	}
+	return ""
+}
+
+func (m *UserModel) GetPubK() string {
+	if m != nil {
+		return m.PubK
+	}
+	return ""
+}
+
+type FriendRequest struct {
+	Username             string   `protobuf:"bytes,1,opt,name=username,proto3" json:"username,omitempty"`
+	Timestamp            int64    `protobuf:"varint,2,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *FriendRequest) Reset()         { *m = FriendRequest{} }
+func (m *FriendRequest) String() string { return proto.CompactTextString(m) }
+func (*FriendRequest) ProtoMessage()    {}
+func (*FriendRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_82b24b10312e6348, []int{2}
+}
+
+func (m *FriendRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_FriendRequest.Unmarshal(m, b)
+}
+func (m *FriendRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_FriendRequest.Marshal(b, m, deterministic)
+}
+func (m *FriendRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_FriendRequest.Merge(m, src)
+}
+func (m *FriendRequest) XXX_Size() int {
+	return xxx_messageInfo_FriendRequest.Size(m)
+}
+func (m *FriendRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_FriendRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_FriendRequest proto.InternalMessageInfo
+
+func (m *FriendRequest) GetUsername() string {
+	if m != nil {
+		return m.Username
+	}
+	return ""
+}
+
+func (m *FriendRequest) GetTimestamp() int64 {
+	if m != nil {
+		return m.Timestamp
+	}
+	return 0
+}
+
+type Message struct {
+	MessageId            int64    `protobuf:"varint,1,opt,name=message_id,json=messageId,proto3" json:"message_id,omitempty"`
+	From                 string   `protobuf:"bytes,2,opt,name=from,proto3" json:"from,omitempty"`
+	To                   string   `protobuf:"bytes,3,opt,name=to,proto3" json:"to,omitempty"`
+	Timestamp            int64    `protobuf:"varint,4,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
+	Deletable            bool     `protobuf:"varint,5,opt,name=deletable,proto3" json:"deletable,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *Message) Reset()         { *m = Message{} }
+func (m *Message) String() string { return proto.CompactTextString(m) }
+func (*Message) ProtoMessage()    {}
+func (*Message) Descriptor() ([]byte, []int) {
+	return fileDescriptor_82b24b10312e6348, []int{3}
+}
+
+func (m *Message) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Message.Unmarshal(m, b)
+}
+func (m *Message) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Message.Marshal(b, m, deterministic)
+}
+func (m *Message) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Message.Merge(m, src)
+}
+func (m *Message) XXX_Size() int {
+	return xxx_messageInfo_Message.Size(m)
+}
+func (m *Message) XXX_DiscardUnknown() {
+	xxx_messageInfo_Message.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Message proto.InternalMessageInfo
+
+func (m *Message) GetMessageId() int64 {
+	if m != nil {
+		return m.MessageId
+	}
+	return 0
+}
+
+func (m *Message) GetFrom() string {
+	if m != nil {
+		return m.From
+	}
+	return ""
+}
+
+func (m *Message) GetTo() string {
+	if m != nil {
+		return m.To
+	}
+	return ""
+}
+
+func (m *Message) GetTimestamp() int64 {
+	if m != nil {
+		return m.Timestamp
+	}
+	return 0
+}
+
+func (m *Message) GetDeletable() bool {
+	if m != nil {
+		return m.Deletable
+	}
+	return false
+}
+
+type AccountHandshake struct {
+	Contacts             []*UserModel     `protobuf:"bytes,1,rep,name=contacts,proto3" json:"contacts,omitempty"`
+	FriendRequests       []*FriendRequest `protobuf:"bytes,2,rep,name=friend_requests,json=friendRequests,proto3" json:"friend_requests,omitempty"`
+	SentMessages         []*Message       `protobuf:"bytes,3,rep,name=sent_messages,json=sentMessages,proto3" json:"sent_messages,omitempty"`
+	UnopenedMessaged     []*Message       `protobuf:"bytes,4,rep,name=unopened_messaged,json=unopenedMessaged,proto3" json:"unopened_messaged,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}         `json:"-"`
+	XXX_unrecognized     []byte           `json:"-"`
+	XXX_sizecache        int32            `json:"-"`
+}
+
+func (m *AccountHandshake) Reset()         { *m = AccountHandshake{} }
+func (m *AccountHandshake) String() string { return proto.CompactTextString(m) }
+func (*AccountHandshake) ProtoMessage()    {}
+func (*AccountHandshake) Descriptor() ([]byte, []int) {
+	return fileDescriptor_82b24b10312e6348, []int{4}
+}
+
+func (m *AccountHandshake) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AccountHandshake.Unmarshal(m, b)
+}
+func (m *AccountHandshake) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AccountHandshake.Marshal(b, m, deterministic)
+}
+func (m *AccountHandshake) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountHandshake.Merge(m, src)
+}
+func (m *AccountHandshake) XXX_Size() int {
+	return xxx_messageInfo_AccountHandshake.Size(m)
+}
+func (m *AccountHandshake) XXX_DiscardUnknown() {
+	xxx_messageInfo_AccountHandshake.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AccountHandshake proto.InternalMessageInfo
+
+func (m *AccountHandshake) GetContacts() []*UserModel {
+	if m != nil {
+		return m.Contacts
+	}
+	return nil
+}
+
+func (m *AccountHandshake) GetFriendRequests() []*FriendRequest {
+	if m != nil {
+		return m.FriendRequests
+	}
+	return nil
+}
+
+func (m *AccountHandshake) GetSentMessages() []*Message {
+	if m != nil {
+		return m.SentMessages
+	}
+	return nil
+}
+
+func (m *AccountHandshake) GetUnopenedMessaged() []*Message {
+	if m != nil {
+		return m.UnopenedMessaged
+	}
+	return nil
+}
+
 func init() {
 	proto.RegisterType((*AccountSignUp)(nil), "protos.AccountSignUp")
+	proto.RegisterType((*UserModel)(nil), "protos.UserModel")
+	proto.RegisterType((*FriendRequest)(nil), "protos.FriendRequest")
+	proto.RegisterType((*Message)(nil), "protos.Message")
+	proto.RegisterType((*AccountHandshake)(nil), "protos.AccountHandshake")
 }
 
 func init() { proto.RegisterFile("protos/account.proto", fileDescriptor_82b24b10312e6348) }
 
 var fileDescriptor_82b24b10312e6348 = []byte{
-	// 125 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0x29, 0x28, 0xca, 0x2f,
-	0xc9, 0x2f, 0xd6, 0x4f, 0x4c, 0x4e, 0xce, 0x2f, 0xcd, 0x2b, 0xd1, 0x03, 0x73, 0x85, 0xd8, 0x20,
-	0xa2, 0x4a, 0xb1, 0x5c, 0xbc, 0x8e, 0x10, 0x89, 0xe0, 0xcc, 0xf4, 0xbc, 0xd0, 0x02, 0x21, 0x29,
-	0x2e, 0x8e, 0xd2, 0xe2, 0xd4, 0xa2, 0xbc, 0xc4, 0xdc, 0x54, 0x09, 0x46, 0x05, 0x46, 0x0d, 0xce,
-	0x20, 0x38, 0x5f, 0x48, 0x98, 0x8b, 0xb5, 0xa0, 0x34, 0x29, 0x3e, 0x5b, 0x82, 0x09, 0x2c, 0xc1,
-	0x52, 0x50, 0x9a, 0xe4, 0x2d, 0x24, 0xcd, 0xc5, 0x99, 0x96, 0x9c, 0x1b, 0x5f, 0x92, 0x9f, 0x9d,
-	0x9a, 0x27, 0xc1, 0x0c, 0xd1, 0x91, 0x96, 0x9c, 0x1b, 0x02, 0xe2, 0x27, 0x41, 0xac, 0x31, 0x06,
-	0x04, 0x00, 0x00, 0xff, 0xff, 0x53, 0x53, 0x7e, 0xbe, 0x85, 0x00, 0x00, 0x00,
+	// 358 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x52, 0x4b, 0x4b, 0xf3, 0x40,
+	0x14, 0x25, 0x8f, 0x7e, 0x5f, 0x73, 0xbf, 0xaf, 0xaf, 0x51, 0x61, 0xf0, 0x01, 0x25, 0xab, 0x6e,
+	0xac, 0xa0, 0x2e, 0x8b, 0xe0, 0x46, 0x2c, 0xd2, 0xcd, 0x68, 0x97, 0x12, 0x26, 0x99, 0x9b, 0x1a,
+	0xda, 0xcc, 0xc4, 0xcc, 0xe4, 0x3f, 0xf8, 0x87, 0xdd, 0x4b, 0x5e, 0xad, 0x15, 0x11, 0xdc, 0xdd,
+	0x73, 0xee, 0x3d, 0xe7, 0xe6, 0x9e, 0x0c, 0x1c, 0x66, 0xb9, 0x32, 0x4a, 0x5f, 0xf0, 0x28, 0x52,
+	0x85, 0x34, 0xd3, 0x0a, 0x92, 0x3f, 0x35, 0xeb, 0x3f, 0x43, 0xef, 0xb6, 0x6e, 0x3c, 0x26, 0x2b,
+	0xb9, 0xcc, 0xc8, 0x31, 0x74, 0x0b, 0x8d, 0xb9, 0xe4, 0x29, 0x52, 0x6b, 0x6c, 0x4d, 0x3c, 0xb6,
+	0xc5, 0xe4, 0x00, 0x3a, 0x59, 0x11, 0x06, 0x6b, 0x6a, 0x57, 0x0d, 0x37, 0x2b, 0xc2, 0x07, 0x72,
+	0x02, 0x5e, 0x1c, 0xa5, 0x81, 0x51, 0x6b, 0x94, 0xd4, 0xa9, 0x15, 0x71, 0x94, 0x3e, 0x95, 0xd8,
+	0x9f, 0x81, 0xb7, 0xd4, 0x98, 0x2f, 0x94, 0xc0, 0xcd, 0xaf, 0xad, 0xfd, 0x39, 0xf4, 0xee, 0xf2,
+	0x04, 0xa5, 0x60, 0xf8, 0x5a, 0xa0, 0x36, 0x3f, 0x3a, 0x9c, 0x82, 0x67, 0x92, 0x14, 0xb5, 0xe1,
+	0x69, 0x56, 0xb9, 0x38, 0x6c, 0x47, 0xf8, 0x6f, 0x16, 0xfc, 0x5d, 0xa0, 0xd6, 0x7c, 0x85, 0xe4,
+	0x0c, 0x20, 0xad, 0xcb, 0x20, 0x11, 0x95, 0x8f, 0xc3, 0xbc, 0x86, 0x99, 0x0b, 0x42, 0xc0, 0x8d,
+	0x73, 0x95, 0xb6, 0x5f, 0x52, 0xd6, 0xa4, 0x0f, 0xb6, 0x51, 0xcd, 0x75, 0xb6, 0x51, 0xfb, 0xcb,
+	0xdc, 0x2f, 0xcb, 0xca, 0xae, 0xc0, 0x0d, 0x1a, 0x1e, 0x6e, 0x90, 0x76, 0xc6, 0xd6, 0xa4, 0xcb,
+	0x76, 0x84, 0xff, 0x6e, 0xc1, 0xb0, 0xc9, 0xfc, 0x9e, 0x4b, 0xa1, 0x5f, 0xf8, 0x1a, 0xc9, 0x39,
+	0x74, 0x23, 0x25, 0x0d, 0x8f, 0x8c, 0xa6, 0xd6, 0xd8, 0x99, 0xfc, 0xbb, 0x1c, 0xd5, 0x7f, 0x4a,
+	0x4f, 0xb7, 0x01, 0xb2, 0xed, 0x08, 0xb9, 0x81, 0x41, 0x5c, 0x25, 0x13, 0xe4, 0x75, 0x34, 0x9a,
+	0xda, 0x95, 0xea, 0xa8, 0x55, 0xed, 0x05, 0xc7, 0xfa, 0xf1, 0x67, 0xa8, 0xc9, 0x35, 0xf4, 0x34,
+	0x4a, 0x13, 0x34, 0x57, 0x6b, 0xea, 0x54, 0xea, 0x41, 0xab, 0x6e, 0xa2, 0x62, 0xff, 0xcb, 0xa9,
+	0x06, 0x68, 0x32, 0x83, 0x51, 0x21, 0x55, 0x86, 0x12, 0x45, 0xab, 0x14, 0xd4, 0xfd, 0x5e, 0x39,
+	0x6c, 0x27, 0x1b, 0x42, 0x84, 0xf5, 0x93, 0xbb, 0xfa, 0x08, 0x00, 0x00, 0xff, 0xff, 0x54, 0x79,
+	0x07, 0x3f, 0x91, 0x02, 0x00, 0x00,
 }
