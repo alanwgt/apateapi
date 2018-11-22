@@ -43,6 +43,19 @@ func GetUser(un string) (*UserCache, error) {
 	return uc, nil
 }
 
+// GetUserByID gets the user from database and stores it in the cache if found
+func GetUserByID(id int64) (*UserCache, error) {
+	c := database.GetOpenConnection()
+	u := &models.User{}
+
+	if c.First(u, &models.User{ID: id}).RecordNotFound() {
+		return nil, errors.New("User with id '" + string(id) + "'not found")
+	}
+
+	uc := SetUser(u)
+	return uc, nil
+}
+
 // SetUser stores the user in the cache with the default expiration
 func SetUser(u *models.User) (uc *UserCache) {
 	var bPubK [32]byte

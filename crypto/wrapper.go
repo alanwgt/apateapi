@@ -53,25 +53,25 @@ func GetServerSecK() *[32]byte {
 }
 
 // OpenUserBox opens a crypto box and returns the raw message
-func OpenUserBox(dr *protos.DeviceRequest) (string, error) {
+func OpenUserBox(dr *protos.DeviceRequest) (string, *cache.UserCache, error) {
 	// we need to decode all the base64 data first
 	bPayload, err := base64.StdEncoding.DecodeString(dr.Paylod)
 
 	if err != nil {
-		return "", errors.New("Payload couldn't be decoded")
+		return "", nil, errors.New("Payload couldn't be decoded")
 	}
 
 	bNonce, err := base64.StdEncoding.DecodeString(dr.Nonce)
 
 	if err != nil {
-		return "", errors.New("Nonce couldn't be decoded")
+		return "", nil, errors.New("Nonce couldn't be decoded")
 	}
 
 	// u, err := ca.GetUser(dr.Username)
 	u, err := cache.GetUser(dr.Username)
 
 	if err != nil {
-		return "", err
+		return "", nil, err
 	}
 
 	var out []byte
@@ -86,10 +86,10 @@ func OpenUserBox(dr *protos.DeviceRequest) (string, error) {
 		u.PubK,
 		secretKey,
 	); !ok {
-		return "", errors.New("Couldn't open the box")
+		return "", nil, errors.New("Couldn't open the box")
 	}
 
-	return string(out), nil
+	return string(out), u, nil
 }
 
 // Loads the .der secret key from a .der file

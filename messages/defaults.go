@@ -37,6 +37,11 @@ func RequestOK(w http.ResponseWriter, m string) {
 	))
 }
 
+// BadRequest sends a default bad request response
+func BadRequest(w http.ResponseWriter) {
+	w.WriteHeader(http.StatusBadRequest)
+}
+
 // RawJSON sends a JSON to the request
 func RawJSON(w http.ResponseWriter, m interface{}) {
 	w.WriteHeader(http.StatusOK)
@@ -48,6 +53,13 @@ func RawJSON(w http.ResponseWriter, m interface{}) {
 	}
 
 	w.Write(d)
+}
+
+// CustomProto sends an OK response with a binary protobuf
+// encoded in base64
+func CustomProto(w http.ResponseWriter, p []byte) {
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprint(w, bToB64(p))
 }
 
 // returns a b64 server response proto message safe to transport via HTTP
