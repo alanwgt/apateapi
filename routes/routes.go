@@ -69,4 +69,34 @@ var routes = Routes{
 		"/user",
 		controllers.DeleteAccount,
 	},
+	Route{
+		"AddContact",
+		"POST",
+		"/user/{username}",
+		controllers.AddContact,
+	},
+	Route{
+		"RemoveContact",
+		"DELETE",
+		"/user/{username}",
+		controllers.RemoveContact,
+	},
+	Route{
+		"AcceptContact",
+		"PUT",
+		"/user/{username}",
+		controllers.AcceptContact,
+	},
+	Route{
+		"SendMessage",
+		"POST",
+		"/message/{users}",
+		controllers.SendMessage,
+	},
+	Route{
+		"DeleteMessage",
+		"DELETE",
+		"/message/{id}",
+		controllers.DeleteMessage,
+	},
 }
