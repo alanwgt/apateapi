@@ -81,6 +81,7 @@ func genDefaultCorsOpts() *cors.Cors {
 			http.MethodPost,
 			http.MethodHead,
 			http.MethodDelete,
+			http.MethodPut,
 		},
 		AllowedHeaders: []string{"*"},
 	})
