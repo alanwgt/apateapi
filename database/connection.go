@@ -44,15 +44,30 @@ func connect() {
 	c.SetLogger(log.New(f, "\r\n", 0666))
 	// we need to manually set the postgres schema
 	c.Exec("SET search_path TO " + dbConf.Schema)
+
 	// AutoMigrate will automatically create the columns
 	c.AutoMigrate(
-		&models.Blocked{},
+		&models.User{},
 		&models.FriendRequest{},
+		&models.Blocked{},
 		&models.LoginAttempt{},
 		&models.Message{},
 		&models.MessageContent{},
-		&models.User{},
 	)
+
+	c.Model(&models.FriendRequest{}).AddForeignKey("user_id", "apate.user(id)", "CASCADE", "CASCADE")
+	c.Model(&models.FriendRequest{}).AddForeignKey("request_to", "apate.user(id)", "CASCADE", "CASCADE")
+
+	c.Model(&models.Blocked{}).AddForeignKey("user_id", "apate.user(id)", "CASCADE", "CASCADE")
+	c.Model(&models.Blocked{}).AddForeignKey("blocked_id", "apate.user(id)", "CASCADE", "CASCADE")
+
+	c.Model(&models.Message{}).AddForeignKey("user_id", "apate.user(id)", "CASCADE", "CASCADE")
+	c.Model(&models.Message{}).AddForeignKey("recipient_id", "apate.user(id)", "CASCADE", "CASCADE")
+
+	c.Model(&models.MessageContent{}).AddForeignKey("message_id", "apate.message(id)", "CASCADE", "CASCADE")
+
+	c.Model(&models.LoginAttempt{}).AddForeignKey("user_id", "apate.user(id)", "CASCADE", "CASCADE")
+
 	conn = c
 }
 
