@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/alanwgt/apateapi/cache"
 
@@ -66,7 +67,7 @@ func CreateAccount(w http.ResponseWriter, r *http.Request) {
 
 // Handshake exchanges an encrypted message to ensure that the user is authenticated
 func Handshake(w http.ResponseWriter, r *http.Request) {
-	_, uc, err := openRequestBox(w, r)
+	_, uc, err := OpenRequestBox(w, r)
 
 	if err != nil {
 		return
@@ -76,7 +77,7 @@ func Handshake(w http.ResponseWriter, r *http.Request) {
 	c := db.GetOpenConnection()
 	var frs []models.FriendRequest
 	var cs []models.User
-	var rms, sms []models.Message
+	var rms []models.Message
 	var utf []int64
 
 	// get all the active contacts
@@ -86,6 +87,7 @@ SELECT fr.user_id as uid, fr.request_to as reqto
 FROM apate."user" u
 		INNER JOIN apate.friend_request fr ON u.id IN (fr.user_id, fr.request_to)
 WHERE fr.deleted_at IS NULL
+	AND fr.accepted_at IS NOT NULL
 	AND u.id = ?
 	AND NOT EXISTS(SELECT NULL
 					FROM apate.blocked b
@@ -123,37 +125,24 @@ WHERE fr.deleted_at IS NULL
 	}
 
 	c.
+		Model(&models.FriendRequest{}).
 		Preload("Requester").
 		Preload("RequestedTo").
-		Where(&models.FriendRequest{
-			RequestTo:  uc.Model.ID,
-			DeletedAt:  nil,
-			AcceptedAt: nil,
-		}).Find(&frs)
+		Where("request_to = ? AND accepted_at IS NULL", uc.Model.ID).
+		Find(&frs)
 
 	c.
+		Model(&models.Message{}).
 		Preload("Sender").
 		Preload("Receiver").
-		Where(&models.Message{
-			RecipientID: uc.Model.ID,
-			OpenedAt:    nil,
-			DeletedAt:   nil,
-		}).Find(&rms)
-
-	c.
-		Preload("Sender").
-		Preload("Receiver").
-		Where(&models.Message{
-			UserID:    uc.Model.ID,
-			OpenedAt:  nil,
-			DeletedAt: nil,
-		}).Find(&sms)
+		Where("recipient_id = ? AND opened_at IS NULL", uc.Model.ID).
+		Find(&rms)
 
 	ac := &protos.AccountHandshake{
-		Contacts:         protoutil.UserModelToProto(cs...),
-		SentMessages:     protoutil.MessageModelToProto(sms...),
-		UnopenedMessaged: protoutil.MessageModelToProto(rms...),
-		FriendRequests:   protoutil.FriendRequestToProto(frs...),
+		Contacts:       protoutil.UserModelToProto(cs...),
+		NewMessages:    protoutil.MessageModelToProto(uc.Model.Username, rms...),
+		FriendRequests: protoutil.FriendRequestToProto(frs...),
+		HasRecoveryKey: uc.Model.RecoverKey != "",
 	}
 
 	out, err := proto.Marshal(ac)
@@ -243,7 +232,7 @@ func DeleteAccount(w http.ResponseWriter, r *http.Request) {
 
 // AddContact will create a friend request if everything is satisfied
 func AddContact(w http.ResponseWriter, r *http.Request) {
-	_, u, e := openRequestBox(w, r)
+	_, u, e := OpenRequestBox(w, r)
 
 	if e != nil {
 		return
@@ -281,14 +270,85 @@ func RemoveContact(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// AcceptContact will update a friend request entry with accepted_at
 func AcceptContact(w http.ResponseWriter, r *http.Request) {
+	_, uc, err := OpenRequestBox(w, r)
 
+	if err != nil {
+		return
+	}
+
+	un, ok := mux.Vars(r)["username"]
+
+	if !ok {
+		messages.BadRequest(w)
+		return
+	}
+
+	unc, _ := cache.GetUser(un)
+
+	c := db.GetOpenConnection()
+	fr := &models.FriendRequest{}
+
+	if c.First(fr, &models.FriendRequest{RequestTo: uc.Model.ID, UserID: unc.Model.ID}).RecordNotFound() {
+		log.Println("no friend request found from " + unc.Model.Username + " to " + uc.Model.Username)
+		messages.BadRequest(w)
+		return
+	}
+
+	c.Model(&fr).Update("accepted_at", time.Now())
+	messages.RequestOK(w, "accepted")
 }
 
-// openRequestBox automatically opens the user's box, returning the
+// StoreRecoveryKey updated the user entry, setting the recover key
+func StoreRecoveryKey(w http.ResponseWriter, r *http.Request) {
+	d, uc, err := OpenRequestBox(w, r)
+
+	if err != nil {
+		return
+	}
+
+	ec := base64.StdEncoding.EncodeToString(d)
+	c := db.GetOpenConnection()
+
+	c.Model(&uc.Model).Update("recover_key", ec)
+	messages.RequestOK(w, "updated")
+}
+
+// DenyFriendRequest updated an friend request entry with deleted_at value
+func DenyFriendRequest(w http.ResponseWriter, r *http.Request) {
+	_, uc, err := OpenRequestBox(w, r)
+
+	if err != nil {
+		return
+	}
+
+	un, ok := mux.Vars(r)["username"]
+
+	if !ok {
+		messages.BadRequest(w)
+		return
+	}
+
+	unc, _ := cache.GetUser(un)
+
+	c := db.GetOpenConnection()
+	fr := &models.FriendRequest{}
+
+	if c.First(fr, &models.FriendRequest{RequestTo: uc.Model.ID, UserID: unc.Model.ID}).RecordNotFound() {
+		log.Println("no friend request found from " + unc.Model.Username + " to " + uc.Model.Username)
+		messages.BadRequest(w)
+		return
+	}
+
+	c.Delete(&fr)
+	messages.RequestOK(w, "deleted")
+}
+
+// OpenRequestBox automatically opens the user's box, returning the
 // plain content with the user model from cache. If an error occurs
 // during the process, an error will be sent
-func openRequestBox(w http.ResponseWriter, r *http.Request) (un string, u *cache.UserCache, e error) {
+func OpenRequestBox(w http.ResponseWriter, r *http.Request) (un []byte, u *cache.UserCache, e error) {
 	var buf []byte
 
 	if r.Method == "GET" || r.Method == "DELETE" {
@@ -303,7 +363,7 @@ func openRequestBox(w http.ResponseWriter, r *http.Request) (un string, u *cache
 			return
 		}
 		buf, _ = base64.StdEncoding.DecodeString(d[0])
-	} else if r.Method == "POST" {
+	} else if r.Method == "POST" || r.Method == "PUT" {
 		buf, _ = ioutil.ReadAll(r.Body)
 	}
 
