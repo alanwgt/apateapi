@@ -14,7 +14,8 @@ message UserModel {
 
 message FriendRequest {
     string username = 1;
-    int64 timestamp = 2;
+    string pub_k = 2;
+    int64 timestamp = 3;
 }
 
 message Message {
@@ -25,9 +26,24 @@ message Message {
     bool deletable = 5;
 }
 
+message MessageBody {
+    enum Type {
+        Text = 0;
+        Image = 1;
+    }
+    int64 message_id = 1;
+    string body = 2;
+    string nonce = 3;
+    Type type = 4;
+}
+
+message MessagesContainer {
+    repeated MessageBody messages = 1;
+}
+
 message AccountHandshake {
     repeated UserModel contacts = 1;
     repeated FriendRequest friend_requests = 2;
-    repeated Message sent_messages = 3;
-    repeated Message unopened_messaged = 4;
+    repeated Message new_messages = 3;
+    bool has_recovery_key = 4;
 }
