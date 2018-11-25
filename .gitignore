@@ -16,7 +16,7 @@ config.dev.json
 config.prod.jsons
 
 # Firebase data
-apate-49951-firebase-adminsdk-ijp4t-97140ca736.json
+apate-cb3e6-firebase-adminsdk-ezgjz-d912eb5ef8.json
 
 # We don't need the log files to be tracked
 *.log
