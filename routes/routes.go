@@ -34,10 +34,10 @@ func BuildRouter() *mux.Router {
 
 var routes = Routes{
 	Route{
-		"Index",
+		"Test",
 		"GET",
-		"/",
-		controllers.Index,
+		"/test/{vals}",
+		controllers.TestMe,
 	},
 	Route{
 		"CreateAccount",
@@ -48,7 +48,7 @@ var routes = Routes{
 	Route{
 		"UserHandshake",
 		"POST",
-		"/user/handshake",
+		"/handshake",
 		controllers.Handshake,
 	},
 	Route{
@@ -83,14 +83,20 @@ var routes = Routes{
 	},
 	Route{
 		"AcceptContact",
-		"PUT",
-		"/user/{username}",
+		"POST",
+		"/fr/{username}",
 		controllers.AcceptContact,
+	},
+	Route{
+		"DenyRequest",
+		"DELETE",
+		"/fr/{username}",
+		controllers.DenyFriendRequest,
 	},
 	Route{
 		"SendMessage",
 		"POST",
-		"/message/{users}",
+		"/message/{user}",
 		controllers.SendMessage,
 	},
 	Route{
@@ -98,5 +104,17 @@ var routes = Routes{
 		"DELETE",
 		"/message/{id}",
 		controllers.DeleteMessage,
+	},
+	Route{
+		"LoadMessage",
+		"GET",
+		"/message/{id}",
+		controllers.LoadMessages,
+	},
+	Route{
+		"StoreRecoverKey",
+		"POST",
+		"/recovery",
+		controllers.StoreRecoveryKey,
 	},
 }
