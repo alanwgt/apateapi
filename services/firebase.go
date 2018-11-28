@@ -58,7 +58,9 @@ func SendFCMMessage(fcmID, t, b, ck, mt, from, mid string) {
 
 	if err != nil {
 		// TODO: handle the error properly
-		log.Fatal(err)
+		log.Println("Couldn't send fcm message, reason:")
+		log.Println(err)
+		return
 	}
 
 	fmt.Println("Message sent:", res)
