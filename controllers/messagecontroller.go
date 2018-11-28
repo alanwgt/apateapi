@@ -6,8 +6,10 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/alanwgt/apateapi/cache"
+	"github.com/alanwgt/apateapi/services"
 
 	"github.com/golang/protobuf/proto"
 
@@ -78,24 +80,66 @@ func SendMessage(w http.ResponseWriter, r *http.Request) {
 
 	c.Create(nmc)
 
-	// md := map[string]string{
-	// 	"sender":    ud.Model.Username,
-	// 	"timestamp": strconv.FormatInt(nm.CreatedAt.Unix(), 10),
-	// 	"id":        strconv.FormatInt(nm.ID, 10),
-	// }
-
 	// FIXME: CHANGE THE FCM TOKEN
-	// services.SendFCMMessage(
-	// 	uc.Model.FcmToken,
-	// 	"New message",
-	// 	"from: "+uc.Model.Username,
-	// 	md,
-	// )
-	messages.RequestOK(w, "message sent")
+	services.SendFCMMessage(
+		ud.Model.FcmToken,
+		"New message",
+		"from: "+uc.Model.Username,
+		uc.Model.Username,
+		dm.Type.String(),
+		uc.Model.Username,
+		strconv.FormatInt(nm.ID, 10),
+	)
+
+	messages.RequestOK(w, strconv.FormatInt(nm.ID, 10))
 }
 
+// DeleteMessage
 func DeleteMessage(w http.ResponseWriter, r *http.Request) {
+	_, uc, err := OpenRequestBox(w, r)
 
+	if err != nil {
+		return
+	}
+
+	mID, ok := mux.Vars(r)["id"]
+
+	if !ok {
+		log.Println("Missing 'id' from DeleteMessage request")
+		messages.BadRequest(w)
+		return
+	}
+
+	mIDC, err := strconv.ParseInt(mID, 10, 64)
+
+	if err != nil {
+		log.Println(err)
+		messages.BadRequest(w)
+		return
+	}
+
+	c := db.GetOpenConnection()
+	m := &models.Message{}
+
+	if c.Preload("Body").Preload("Receiver").First(m, &models.Message{ID: mIDC, UserID: uc.Model.ID}).RecordNotFound() {
+		log.Println("Message not found for id:", mIDC)
+		messages.BadRequest(w)
+		return
+	}
+
+	services.SendFCMMessage(
+		m.Receiver.FcmToken,
+		"",
+		"",
+		uc.Model.Username,
+		"DeleteMessage",
+		uc.Model.Username,
+		strconv.FormatInt(mIDC, 10),
+	)
+
+	c.Delete(m.Body)
+	c.Delete(m)
+	messages.RequestOK(w, "deleted")
 }
 
 // LoadMessages returns a proto MessageBody array and deletes them from database
@@ -167,8 +211,8 @@ func loadMessage(c *gorm.DB, id int64) (*protos.MessageBody, error) {
 		Type:      pType,
 	}
 
-	// c.Model(&m).Update("opened_at", time.Now())
-	// c.Delete(&m.Body)
+	c.Model(&m).Update("opened_at", time.Now())
+	c.Delete(&m.Body)
 
 	return mp, nil
 }

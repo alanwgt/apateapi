@@ -41,9 +41,14 @@ message MessagesContainer {
     repeated MessageBody messages = 1;
 }
 
+message MessageRefresh {
+    repeated Message messages = 1;
+}
+
 message AccountHandshake {
     repeated UserModel contacts = 1;
     repeated FriendRequest friend_requests = 2;
     repeated Message new_messages = 3;
-    bool has_recovery_key = 4;
+    repeated UserModel blocked_users = 4;
+    bool has_recovery_key = 5;
 }

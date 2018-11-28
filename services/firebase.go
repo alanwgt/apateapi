@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"time"
 
@@ -27,7 +28,7 @@ func init() {
 }
 
 // SendFCMMessage sends a message to a device through Firebase Cloud Messaging
-func SendFCMMessage(fcmID string, t, b string, data map[string]string) {
+func SendFCMMessage(fcmID, t, b, ck, mt, from, mid string) {
 	ctx := context.Background()
 	client, err := app.Messaging(ctx)
 
@@ -40,17 +41,16 @@ func SendFCMMessage(fcmID string, t, b string, data map[string]string) {
 
 	m := &messaging.Message{
 		Token: fcmID,
-		Data:  data,
 		Notification: &messaging.Notification{
 			Title: t,
 			Body:  b,
 		},
-		Android: &messaging.AndroidConfig{
-			TTL:          &oneHour,
-			Notification: &messaging.AndroidNotification{
-				// Icon:  "",
-				// Color: "",
-			},
+		Data: map[string]string{
+			"title":   t,
+			"body":    b,
+			"mtype":   mt,
+			"user":    from,
+			"payload": mid,
 		},
 	}
 
@@ -61,6 +61,6 @@ func SendFCMMessage(fcmID string, t, b string, data map[string]string) {
 		log.Fatal(err)
 	}
 
-	log.Println(res)
+	fmt.Println("Message sent:", res)
 	// message successfully sent
 }

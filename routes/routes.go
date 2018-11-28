@@ -36,7 +36,7 @@ var routes = Routes{
 	Route{
 		"Test",
 		"GET",
-		"/test/{vals}",
+		"/test",
 		controllers.TestMe,
 	},
 	Route{
@@ -116,5 +116,35 @@ var routes = Routes{
 		"POST",
 		"/recovery",
 		controllers.StoreRecoveryKey,
+	},
+	Route{
+		"BlockUser",
+		"POST",
+		"/block/{username}",
+		controllers.BlockUser,
+	},
+	Route{
+		"UnblockUser",
+		"DELETE",
+		"/block/{username}",
+		controllers.UnblockUser,
+	},
+	Route{
+		"RefreshMessages",
+		"GET",
+		"/refresh",
+		controllers.ReloadMessages,
+	},
+	Route{
+		"GetRecKey",
+		"GET",
+		"/recovery/{username}",
+		controllers.GetRecKey,
+	},
+	Route{
+		"ProveAccount",
+		"POST",
+		"/prove",
+		controllers.ProveAccount,
 	},
 }
